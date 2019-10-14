@@ -5,8 +5,10 @@ import Card from "./component/Card";
 const Movie = (props) => {
   const [movie, setMovie] = useState(null);
   console.log("from moviefile",props)
+  var url = props.match.url;
   useEffect(() => {
     const id = props.match.params.id;
+    
     // change ^^^ that line and grab the id from the URL
     // You will NEED to add a dependency array to this effect hook
 
@@ -14,17 +16,20 @@ const Movie = (props) => {
         .get(`http://localhost:5000/api/movies/${id}`)
         .then(response => {
           setMovie(response.data);
+          
         })
         .catch(error => {
           console.error(error);
         });
 
-  },[]);
+  },[url]);
   
  
   const saveMovie = () => {
     const addToSavedList = props.funct;
-    addToSavedList(movie)
+
+    addToSavedList(movie);
+    console.log("resopnse",movie)
   }
 
   if (!movie) {
