@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Card from "./component/Card";
 
 const Movie = (props) => {
-  const [movie, setMovie] = useState({});
- 
+  const [movie, setMovie] = useState(null);
+  console.log("from moviefile",props)
+  var url = props.match.url;
   useEffect(() => {
-    const id = 1;
+    const id = props.match.params.id;
+    
     // change ^^^ that line and grab the id from the URL
     // You will NEED to add a dependency array to this effect hook
 
@@ -13,18 +16,21 @@ const Movie = (props) => {
         .get(`http://localhost:5000/api/movies/${id}`)
         .then(response => {
           setMovie(response.data);
+          
         })
         .catch(error => {
           console.error(error);
         });
 
-  },[]);
+  },[url]);
   
-  // Uncomment this only when you have moved on to the stretch goals
-  // const saveMovie = () => {
-  //   const addToSavedList = props.addToSavedList;
-  //   addToSavedList(movie)
-  // }
+ 
+  const saveMovie = () => {
+    const addToSavedList = props.funct;
+
+    addToSavedList(movie);
+    console.log("resopnse",movie)
+  }
 
   if (!movie) {
     return <div>Loading movie information...</div>;
@@ -32,26 +38,12 @@ const Movie = (props) => {
 
   const { title, director, metascore, stars } = movie;
   return (
-    <div className="save-wrapper">
-      <div className="movie-card">
-        <h2>{title}</h2>
-        <div className="movie-director">
-          Director: <em>{director}</em>
-        </div>
-        <div className="movie-metascore">
-          Metascore: <strong>{metascore}</strong>
-        </div>
-        <h3>Actors</h3>
-
-        {stars.map(star => (
-          <div key={star} className="movie-star">
-            {star}
-          </div>
-        ))}
-      </div>
-      <div className="save-button">Save</div>
+    <div className = "save-wrapper">
+      <Card title = {title} director = {director} metascore = {metascore} stars = {stars} button = {true}/>
+      <button onClick={()=>saveMovie()} className="save-button">Save</button>
     </div>
-  );
+    
+      );
 }
 
 export default Movie;
